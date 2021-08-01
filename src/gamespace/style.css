@@ -1,12 +1,20 @@
-.warzone {
-  display: flex;
-  margin-top: clamp(50px, 25%, 300px);
-  flex-direction: column;
-  align-items: center;
-}
 .gameboard {
   width: 100vw;
   position: absolute;
   margin-top: 20vh;
   z-index: -1;
+}
+.warzone {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  z-index: 1;
+  margin-top: 40px;
+  height: 240px;
+}
+.playerSpace {
+  flex: 1;
+}
+.aiSpace {
+  flex: 1;
 }
