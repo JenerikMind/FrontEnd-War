@@ -18,7 +18,7 @@ function GameController() {
     playerDeck: ["loading"],
     aiDeck: ["loading"],
     war: false,
-    overtime: false
+    overtime: 0
   };
 
   const [state, setState] = useState(initState);
@@ -45,7 +45,13 @@ function GameController() {
       return 0;
     }
 
-    setState({ ...state, playerDeck: playerDeck, aiDeck: aiDeck, war: war });
+    setState({
+      ...state,
+      playerDeck: playerDeck,
+      aiDeck: aiDeck,
+      war: war,
+      overtime: overtime
+    });
   }
   //////////////////////////////////////////////
 

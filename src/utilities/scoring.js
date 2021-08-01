@@ -29,15 +29,19 @@ function rewardWinner(deck = [], obj = null, numCards) {
   const winningCard = numCards ? deck.slice(0, numCards) : deck[0];
   let newDeck = numCards ? deck.slice(numCards) : deck.slice(1);
 
-  console.log(`Before: ${newDeck.length}`);
-
   winningCard.length > 1
     ? newDeck.push(...winningCard)
     : newDeck.push(winningCard);
 
-  if (obj) newDeck.push(obj);
+  console.log(`obj `, obj);
+  console.log(`isArray()`, Array.isArray(obj));
 
-  console.log(`After: ${newDeck.length}`);
+  if (Array.isArray(obj)) {
+    newDeck.push(...obj);
+  } else if (obj) {
+    newDeck.push(obj);
+  }
+
   return newDeck;
 }
 
@@ -49,24 +53,35 @@ function punishLoser(deck = [], numCards = 1) {
   return deck.slice(numCards);
 }
 
+/**
+ *  The backbone of the logic in the game.
+ *
+ *  Function that determines how the cards are divvied up
+ *  amongst the "players".  Default is that the winning player
+ *  takes both the loser's card and the winning card.  WAR determines
+ *  whether the winning player will take more than a single
+ *  card.
+ * @param {*} playerDeck
+ * @param {*} aiDeck
+ * @param {*} war state triggered on first "draw"
+ * @param {*} overtime # of overtime rounds if consecutive "draw"s
+ */
 function outcome(playerDeck, aiDeck, war, overtime) {
-  const playerCard = war ? playerDeck[2] : playerDeck[0];
-  const aiCard = war ? aiDeck[2] : aiDeck[0];
+  const playerCard = war ? playerDeck[2 + overtime] : playerDeck[0];
+  const aiCard = war ? aiDeck[2 + overtime] : aiDeck[0];
 
   console.log(`Player: ${playerCard.name} // AI: ${aiCard.name}`);
 
   let score = scoring(playerCard.name, aiCard.name);
-
-  console.log(`Score: ${score}`);
-
+  let spoils = 3 + overtime; // the spoils of war
   let newPlayerDeck,
     newAiDeck = [];
 
   if (score === "win") {
     if (war) {
       console.log(`rewarding the winner of war...`);
-      newPlayerDeck = rewardWinner(playerDeck, aiCard, 3);
-      newAiDeck = punishLoser(aiDeck, 3);
+      newPlayerDeck = rewardWinner(playerDeck, aiDeck.slice(0, spoils), spoils);
+      newAiDeck = punishLoser(aiDeck, spoils);
     } else {
       newPlayerDeck = rewardWinner(playerDeck, aiCard);
       newAiDeck = punishLoser(aiDeck);
@@ -74,8 +89,8 @@ function outcome(playerDeck, aiDeck, war, overtime) {
   } else if (score === "lose") {
     if (war) {
       console.log(`rewarding the winner of war...`);
-      newAiDeck = rewardWinner(aiDeck, playerCard, 3);
-      newPlayerDeck = punishLoser(playerDeck, 3);
+      newAiDeck = rewardWinner(aiDeck, playerDeck.slice(0, spoils), spoils);
+      newPlayerDeck = punishLoser(playerDeck, spoils);
     } else {
       newAiDeck = rewardWinner(aiDeck, playerCard);
       newPlayerDeck = punishLoser(playerDeck);
@@ -83,13 +98,18 @@ function outcome(playerDeck, aiDeck, war, overtime) {
   } else {
     // WARRRRRR
     if (war) {
-      return { war: war, overtime: true };
+      return { war: war, overtime: overtime + 1 };
     } else {
       return { war: !war };
     }
   }
 
-  return { playerDeck: newPlayerDeck, aiDeck: newAiDeck, war: false };
+  return {
+    playerDeck: newPlayerDeck,
+    aiDeck: newAiDeck,
+    war: false,
+    overtime: 0
+  };
 }
 
 export { scoring, rewardWinner, punishLoser, outcome };
