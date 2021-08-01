@@ -1,0 +1,28 @@
+button {
+  height: 30px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+  z-index: 1;
+}
+.gameScreen {
+  display: flex;
+  position: absolute;
+  z-index: -1;
+  background-color: lightgreen;
+  height: 50vh;
+  width: 100%;
+}
+.card-count {
+  position: absolute;
+  display: flex;
+  height: 100%;
+  width: 98%;
+}
+.ai-card-count {
+  margin-left: auto;
+  margin-top: auto;
+}
+.player-card-count {
+  margin-left: 2%;
+}

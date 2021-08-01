@@ -1,5 +1,6 @@
 import Card from "../items/Card";
 import GameScreen from "../UI/GameScreen";
+import "./style.css";
 
 /**
  * The gameboard will contain the two different players
@@ -59,11 +60,12 @@ function Gameboard({ playerCards, aiCards, checkWinner, war, overtime }) {
   return (
     <div className="gameboard">
       <GameScreen
+        className="col-md-12"
         checkWinner={checkWinner}
         playerCardCount={playerCards.length}
         aiCardCount={aiCards.length}
       />
-      {war === false ? normalPlay() : wartime()}
+      <div className="warzone">{war === false ? normalPlay() : wartime()}</div>
     </div>
   );
 }

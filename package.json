@@ -1,11 +1,8 @@
 {
-  "name": "react",
+  "name": "front-end-challenge-war",
   "version": "1.0.0",
-  "description": "React example starter project",
-  "keywords": [
-    "react",
-    "starter"
-  ],
+  "description": "The card game war hacked together using React",
+  "keywords": [],
   "main": "src/index.js",
   "dependencies": {
     "react": "17.0.2",
