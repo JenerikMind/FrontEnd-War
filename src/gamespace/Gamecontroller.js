@@ -1,7 +1,10 @@
-import Gameboard from "./Gameboard";
-import createDeck from "../utilities/createDeck";
-import { outcome } from "../utilities/scoring";
 import { useEffect, useState } from "react";
+import { outcome } from "../utilities/scoring";
+
+import Gameboard from "./Gameboard";
+import Winner from "../UI/Winner";
+import MainMenu from "../UI/MainMenu";
+import createDeck from "../utilities/createDeck";
 
 /**
  * The gamecontroller that will have control over both the player side
@@ -18,7 +21,9 @@ function GameController() {
     playerDeck: ["loading"],
     aiDeck: ["loading"],
     war: false,
-    overtime: 0
+    overtime: 0,
+    isRunning: false,
+    winner: ""
   };
 
   const [state, setState] = useState(initState);
@@ -52,6 +57,14 @@ function GameController() {
       war: war,
       overtime: overtime
     });
+
+    if (state.playerDeck.length === 0 || state.aiDeck.length === 0) {
+      setState({
+        ...state,
+        isRunning: false,
+        winner: state.playerDeck.length === 0 ? "ai" : "player"
+      });
+    }
   }
   //////////////////////////////////////////////
 
@@ -66,27 +79,71 @@ function GameController() {
     secondSet = deck.slice(26);
 
     // update the state
-    setState({ ...state, playerDeck: firstSet, aiDeck: secondSet });
+    setState({
+      ...state,
+      playerDeck: firstSet,
+      aiDeck: secondSet,
+      isRunning: true
+    });
   }
 
   // use a hook to initialize the game
   // and prevent the rerender loop error
-  useEffect(() => {
-    initializeGame();
-  }, []);
+  // useEffect(() => {
+  //   initializeGame();
+  // }, []);
 
   /////////////////////////////////////////////////
 
+  /////////// GAME //////////////
+
+  // Changes component based on game state
+  // if game is not active, and no winner, game will
+  // display main menu.  If active, display game, and
+  // if inactive + winner, display winner component.
+  const gameDisplay = () => {
+    if (state.isRunning) {
+      return (
+        <div className="gamespace">
+          <Gameboard
+            war={state.war}
+            playerCards={state.playerDeck}
+            aiCards={state.aiDeck}
+            checkWinner={checkWinner}
+            overtime={state.overtime}
+          />
+        </div>
+      );
+    } else {
+      if (state.winner.length > 0) {
+        return <Winner winner={state.winner} />;
+      } else {
+        return <MainMenu startGame={initializeGame} />;
+      }
+    }
+  };
+
   return (
-    <div className="gamespace">
-      <Gameboard
-        war={state.war}
-        playerCards={state.playerDeck}
-        aiCards={state.aiDeck}
-        checkWinner={checkWinner}
-        overtime={state.overtime}
-      />
-    </div>
+    <>
+      <section className="welcome-to-war">
+        <h1 className="title text-warning">WAR</h1>
+        <ol className="rules-list">
+          <li>Each player throws out a card, highest wins.</li>
+          <li>
+            Equal cards means a draw, and a draw means...{" "}
+            <span className="text-warning">WAR</span>.
+          </li>
+          <li>During WAR, draw 2 more cards. The final card is judged.</li>
+          <li>If another draw is the outcome, continue until someone wins.</li>
+          <li>
+            WAR ends "with no survivors" (Bane, 2012).
+            <br /> The game ends when there are no more cards in a player's
+            deck.
+          </li>
+        </ol>
+      </section>
+      {gameDisplay()}
+    </>
   );
 }
 

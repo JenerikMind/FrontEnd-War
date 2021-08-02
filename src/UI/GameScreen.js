@@ -1,6 +1,6 @@
 import "./style.css";
 
-function GameScreen({ nextCard, checkWinner, playerCardCount, aiCardCount }) {
+function GameScreen({ checkWinner, playerCardCount, aiCardCount }) {
   return (
     <div className="gameScreen">
       <div className="card-count">

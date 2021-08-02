@@ -7,6 +7,11 @@ import "./style.css";
  * and handle which cards are thrown out
  */
 function Gameboard({ playerCards, aiCards, checkWinner, war, overtime }) {
+  console.log("player card", playerCards[0]);
+  console.log("ai card", aiCards[0]);
+
+  if (playerCards[0] === undefined || aiCards[0] === undefined) checkWinner();
+
   // the JSX element for normal play time (aka when its not WARRRRRRRRRRRR)
   const normalPlay = () => {
     return (
