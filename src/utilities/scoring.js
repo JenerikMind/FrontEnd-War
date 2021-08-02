@@ -33,9 +33,6 @@ function rewardWinner(deck = [], obj = null, numCards) {
     ? newDeck.push(...winningCard)
     : newDeck.push(winningCard);
 
-  console.log(`obj `, obj);
-  console.log(`isArray()`, Array.isArray(obj));
-
   if (Array.isArray(obj)) {
     newDeck.push(...obj);
   } else if (obj) {
@@ -70,7 +67,8 @@ function outcome(playerDeck, aiDeck, war, overtime) {
   const playerCard = war ? playerDeck[2 + overtime] : playerDeck[0];
   const aiCard = war ? aiDeck[2 + overtime] : aiDeck[0];
 
-  console.log(`Player: ${playerCard.name} // AI: ${aiCard.name}`);
+  if (playerCard === undefined) return { winner: "ai" };
+  if (aiCard === undefined) return { winner: "player" };
 
   let score = scoring(playerCard.name, aiCard.name);
   let spoils = 3 + overtime; // the spoils of war
@@ -79,7 +77,6 @@ function outcome(playerDeck, aiDeck, war, overtime) {
 
   if (score === "win") {
     if (war) {
-      console.log(`rewarding the winner of war...`);
       newPlayerDeck = rewardWinner(playerDeck, aiDeck.slice(0, spoils), spoils);
       newAiDeck = punishLoser(aiDeck, spoils);
     } else {
@@ -88,7 +85,6 @@ function outcome(playerDeck, aiDeck, war, overtime) {
     }
   } else if (score === "lose") {
     if (war) {
-      console.log(`rewarding the winner of war...`);
       newAiDeck = rewardWinner(aiDeck, playerDeck.slice(0, spoils), spoils);
       newPlayerDeck = punishLoser(playerDeck, spoils);
     } else {

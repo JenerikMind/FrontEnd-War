@@ -18,8 +18,8 @@ function GameController() {
   // initialize a master state that keeps track of the game
   const initState = {
     score: 0,
-    playerDeck: ["loading"],
-    aiDeck: ["loading"],
+    playerDeck: [{ name: "2", suit: "Diamonds" }],
+    aiDeck: [{ name: "3", suit: "Diamonds" }],
     war: false,
     overtime: 0,
     isRunning: false,
@@ -36,8 +36,9 @@ function GameController() {
   };
 
   /////////// GAME CONTROL ////////////////////
+
   function checkWinner() {
-    const { playerDeck, aiDeck, war, overtime } = outcome(
+    const { playerDeck, aiDeck, war, overtime, winner } = outcome(
       state.playerDeck,
       state.aiDeck,
       state.war,
@@ -47,6 +48,13 @@ function GameController() {
     if (playerDeck === undefined) {
       if (war) setState({ ...state, war: war });
       if (overtime) setState({ ...state, overtime: overtime });
+      if (winner) {
+        setState({
+          ...state,
+          isRunning: false,
+          winner: state.playerDeck.length === 0 ? "ai" : "player"
+        });
+      }
       return 0;
     }
 
@@ -57,14 +65,6 @@ function GameController() {
       war: war,
       overtime: overtime
     });
-
-    if (state.playerDeck.length === 0 || state.aiDeck.length === 0) {
-      setState({
-        ...state,
-        isRunning: false,
-        winner: state.playerDeck.length === 0 ? "ai" : "player"
-      });
-    }
   }
   //////////////////////////////////////////////
 

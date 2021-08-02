@@ -7,9 +7,6 @@ import "./style.css";
  * and handle which cards are thrown out
  */
 function Gameboard({ playerCards, aiCards, checkWinner, war, overtime }) {
-  console.log("player card", playerCards[0]);
-  console.log("ai card", aiCards[0]);
-
   if (playerCards[0] === undefined || aiCards[0] === undefined) checkWinner();
 
   // the JSX element for normal play time (aka when its not WARRRRRRRRRRRR)
@@ -28,33 +25,35 @@ function Gameboard({ playerCards, aiCards, checkWinner, war, overtime }) {
 
   // deal out the armaments... its WARRRRRRRRRRRRRRRRRRRRR
   const wartime = () => {
+    let cardsToDraw = 2;
+
+    if (aiCards[cardsToDraw] === undefined) {
+      cardsToDraw = aiCards.length - 1;
+    } else if (playerCards[cardsToDraw] === undefined) {
+      cardsToDraw = playerCards.length - 1;
+    }
+
     return (
       <>
         <div className="playerSpace">
-          <Card player="player" card={playerCards[0]} />
-          <Card player="player" card={playerCards[1]} />
-          <Card player="player" card={playerCards[2]} />
-          {overtimeRounds("player")}
+          {createRounds("player", cardsToDraw + overtime)}
         </div>
         <div className="aiSpace">
-          <Card player="AI" card={aiCards[0]} />
-          <Card player="AI" card={aiCards[1]} />
-          <Card player="AI" card={aiCards[2]} />
-          {overtimeRounds("ai")}
+          {createRounds("ai", cardsToDraw + overtime)}
         </div>
       </>
     );
   };
 
-  // we were more evenly matched than I thought... until now! (hopefully)
-  const overtimeRounds = (player) => {
+  // function to create Rounds for war!
+  const createRounds = (player, rounds) => {
     let overtimeArr = [];
-    for (let i = 0; i < overtime; i++) {
+    for (let i = 0; i <= rounds; i++) {
       let card = null;
       if (player === "player") {
-        card = <Card player="player" card={playerCards[2 + i]} />;
+        card = <Card player="player" card={playerCards[i]} />;
       } else {
-        card = <Card player="AI" card={aiCards[2 + i]} />;
+        card = <Card player="AI" card={aiCards[i]} />;
       }
       overtimeArr.push(card);
     }
