@@ -8,7 +8,7 @@ function GameScreen({ checkWinner, playerCardCount, aiCardCount }) {
         <p className="ai-card-count">AI Cards: {aiCardCount}</p>
       </div>
       <button className="btn btn-warning" onClick={checkWinner}>
-        Score Cards
+        Next Cards
       </button>
     </div>
   );
